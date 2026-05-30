@@ -238,50 +238,49 @@
   <div class="section-header">
     <span class="section-title">Phase 1</span>
     <span class="section-tag">Foundation — The Entity</span>
-    <span class="section-flag" id="flag-phase1" style="display:none">BLOCKED</span>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Write soul.md</div>
+      <div class="item-label done">Write soul.md</div>
       <div class="item-meta">The mandate. Immutable. Written once.</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Create repo blairs-network/sentinel</div>
+      <div class="item-label done">Create repo blairs-network/sentinel</div>
       <div class="item-meta">GitHub · public · MIT license</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Commit AGENTS.md + README.md + soul.md</div>
+      <div class="item-label done">Commit AGENTS.md + README.md + soul.md</div>
       <div class="item-meta">Base repo structure in place</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Initialize memory/sentinel.db</div>
+      <div class="item-label done">Initialize memory/sentinel.db</div>
       <div class="item-meta">schema.sql · 4 tables · append-only verified</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Verify memory/db.py — all write functions</div>
+      <div class="item-label done">Verify memory/db.py — all write functions</div>
       <div class="item-meta">Chained call: observation → signal → decision → build</div>
     </div>
   </div>
@@ -295,53 +294,53 @@
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Verify observe.py — empty inbox run</div>
+      <div class="item-label done">Verify observe.py — empty inbox run</div>
       <div class="item-meta">Returns valid dict · empty signals · capabilities listed</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Verify observe.py — signal inbox run</div>
+      <div class="item-label done">Verify observe.py — signal inbox run</div>
       <div class="item-meta">Signal read · moved to inbox/processed/ · returned in dict</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Verify loop.py — 3 cycles</div>
+      <div class="item-label done">Verify loop.py — 3 cycles</div>
       <div class="item-meta">3 observation rows in db · no exceptions · cycle increments</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">Verify build.py — scope a test skill</div>
+      <div class="item-label done">Verify build.py — scope a test skill</div>
       <div class="item-meta">Decision logged first · directory created · AGENTS.md written</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
-    <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
     <div class="item-text">
-      <div class="item-label">End-to-end test — full signal → build cycle</div>
+      <div class="item-label done">End-to-end test — full signal → build cycle</div>
       <div class="item-meta">Drop Hermes signal · loop picks up · decision logged · skill scoped</div>
     </div>
   </div>
 
   <div class="item" onclick="toggle(this)">
     <div class="checkbox"></div>
-    <div class="status-dot"></div>
+    <div class="status-dot active"></div>
     <div class="item-text">
       <div class="item-label">Sentinel is alive — loop.py running on Mac Mini M4</div>
       <div class="item-meta">Continuous · logging · no manual trigger required</div>
@@ -464,7 +463,7 @@
 </section>
 
 <footer>
-  <span id="lastUpdated">—</span>
+  <span id="lastUpdated">updated May 30, 2026</span>
   <button class="reset-link" onclick="resetAll()">reset</button>
 </footer>
 
@@ -505,9 +504,18 @@
 
   function load() {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
+    if (!saved) {
+      updateProgress();
+      return;
+    }
     const checked = JSON.parse(saved);
     const items = document.querySelectorAll('.item');
+    // Clear all, then apply saved state
+    items.forEach(item => {
+      item.querySelector('.checkbox').classList.remove('done');
+      item.querySelector('.item-label').classList.remove('done');
+      item.querySelector('.status-dot').classList.remove('done');
+    });
     checked.forEach(i => {
       if (items[i]) {
         items[i].querySelector('.checkbox').classList.add('done');
@@ -528,7 +536,6 @@
   }
 
   load();
-  updateProgress();
 </script>
 
 </body>

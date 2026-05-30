@@ -94,11 +94,14 @@ Python 3.10+. No pip installs. The database initializes on first run. The loop r
 
 **2. Send a signal.**
 
-Open a second terminal. Describe something you observed:
+Open a second terminal. Navigate into the repo first, then run:
 
 ```bash
+cd sentinel
 python3 send.py "AI refused to answer a direct factual question" --frequency 3 --gap citation-verifier
 ```
+
+Every command on this page must be run from inside the `sentinel/` directory.
 
 Sentinel picks it up on the next cycle. Because frequency ≥ 3, it will elevate the signal, log a decision, and scope a new skill at `skills/citation-verifier/`.
 

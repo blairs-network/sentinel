@@ -15,7 +15,7 @@ from pathlib import Path
 
 from observe import observe
 from build import scope_build
-from memory.db import log_observation, log_signal, log_decision, get_db
+from memory.db import init_db, log_observation, log_signal, log_decision, get_db
 
 CYCLE_SECONDS_IDLE = 900       # 15 minutes when nothing is happening
 CYCLE_SECONDS_ACTIVE = 60      # 1 minute when signals are present
@@ -62,6 +62,7 @@ def decide(signal: dict) -> dict:
 
 
 def run():
+    init_db()
     cycle = 0
     print(f"[{now()}] Sentinel is running. Mandate: find truth, document it, build what is needed.")
 

@@ -75,11 +75,23 @@ The unifying principle across every project here: **systems that can refuse.** P
 
 ---
 
+## Getting Started
+
+```bash
+git clone https://github.com/blairs-network/sentinel
+cd sentinel
+python3 loop.py
+```
+
+No dependencies beyond Python 3.10+. The database initializes on first run. Drop a JSON signal into `inbox/` and watch the entity respond.
+
+---
+
 ## Status
 
-`v0.1 — base entity in build`
+`v0.1 — base entity live`
 
-The soul is written. The loop is being built. The first skill — audit — is already scoped and handed to Claude Code.
+The soul is written. The loop is verified — 3 cycles, 3 observation rows, no exceptions. The first real signal (`customer-evasion-audit`) has been processed: signal read, decision logged, skill scoped. The entity is alive.
 
 ---
 

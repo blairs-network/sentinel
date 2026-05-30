@@ -84,13 +84,47 @@ Drop a file like that into `inbox/` and the loop picks it up on the next cycle.
 
 ## Getting Started
 
+**1. Clone and run.**
+
 ```bash
 git clone https://github.com/blairs-network/sentinel
 cd sentinel
 python3 loop.py
 ```
 
-Python 3.10+. No pip installs. The database initializes on first run. The loop runs until you stop it.
+Python 3.10+. No pip installs. The database initializes on first run. The loop runs until you stop it — checking the inbox every 15 minutes, logging every cycle.
+
+**2. Send a signal.**
+
+Open a second terminal. Describe something you observed:
+
+```bash
+python3 send.py "AI refused to answer a direct factual question" --frequency 3 --gap citation-verifier
+```
+
+Sentinel picks it up on the next cycle. Because frequency ≥ 3, it will elevate the signal, log a decision, and scope a new skill at `skills/citation-verifier/`.
+
+**3. Watch what happened.**
+
+```bash
+python3 -c "
+import sqlite3
+conn = sqlite3.connect('memory/sentinel.db')
+conn.row_factory = sqlite3.Row
+for row in conn.execute('SELECT ts, source, decision, action FROM decisions ORDER BY id DESC LIMIT 5'):
+    print(dict(row))
+"
+```
+
+Every observation, signal, decision, and build is in `memory/sentinel.db`. Nothing is deleted.
+
+**Signal flags:**
+
+| Flag | What it does |
+|---|---|
+| `--frequency N` | How many times you've seen this. Sentinel acts at 3 or more. |
+| `--gap skill-name` | Name of the skill that would fill this gap. Sentinel will create it. |
+| `--source name` | Where the signal came from. Default: `manual`. |
 
 ---
 

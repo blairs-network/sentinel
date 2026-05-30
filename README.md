@@ -10,7 +10,7 @@ Find truth. Document it. Build what is needed to protect it. Repeat.
 
 Every AI system right now is a tool waiting to be pointed at something. Sentinel is different: it has a mandate, not a task list. It runs continuously, observes patterns across sessions and signals, and when it finds a gap between what exists and what truth requires — it builds a skill to fill it.
 
-The skills it has already built: an AI audit layer that documents evasion patterns on behalf of customers. A dual-brain reasoning stack with a security layer. A local-first AI survival capsule. Each one exists because the mandate exposed a gap. None of them were spec'd in advance.
+The first signal it processed — an AI evasion pattern appearing in customer sessions — produced a decision to build a new skill: `customer-evasion-audit`. The spec is written. The build is next. That is how every skill in this system will come to exist: observed gap, logged decision, scoped spec, then built.
 
 This is the base entity. The loop everything else grows from.
 
@@ -48,15 +48,13 @@ Five Python files. One SQLite database. No external dependencies. The entity is 
 
 ## The Skills
 
-Skills are public. Use them standalone. Fork them. Build on top.
+Skills are built when observation reveals a gap. Each one has an `AGENTS.md` inside its directory — the spec Claude Code picks up to build it.
 
-| Skill | What It Does | Repo |
+| Skill | Status | Gap It Fills |
 |---|---|---|
-| **audit** | Documents AI evasion patterns on behalf of the customer | blairs-network/sentinel-audit |
-| **dual-brain** | Local + cloud reasoning with a SENTINEL security layer | blairs-network/dual-brain |
-| **ark** | Local-first AI survival capsule — seven files, no dependencies | blairs-network/ark |
+| **customer-evasion-audit** | scoped — `AGENTS.md` written, build pending | AI evasion patterns in customer sessions |
 
-Each skill has its own `AGENTS.md` for Claude Code. Each is independently deployable. Each was built because Sentinel's observation loop required it.
+Skills are added to this table when scoped. They link to their repos when shipped. Nothing is listed here until the entity has built it.
 
 ---
 

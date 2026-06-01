@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SENTINEL — Build Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F2ECE1;
+    --ink: #141414;
+    --red: #C02020;
+    --muted: #888880;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 48px 32px 96px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    border-top: 3px solid var(--ink);
+    padding-top: 24px;
+    margin-bottom: 64px;
+  }
+
+  .overline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .mandate {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    border-left: 2px solid var(--red);
+    padding-left: 14px;
+    margin-top: 16px;
+  }
+
+  .progress-bar {
+    margin: 40px 0 64px;
+    height: 2px;
+    background: #ddd8ce;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--ink);
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  section {
+    margin-bottom: 56px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .section-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .section-flag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    margin-left: auto;
+  }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8e3d8;
+    cursor: pointer;
+  }
+
+  .item:last-child { border-bottom: none; }
+
+  .item:hover { background: rgba(0,0,0,0.015); margin: 0 -8px; padding: 12px 8px; }
+
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink);
+    flex-shrink: 0;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .checkbox.done {
+    background: var(--ink);
+  }
+
+  .checkbox.done::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    border-left: 1.5px solid var(--cream);
+    border-bottom: 1.5px solid var(--cream);
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  .item-text {
+    flex: 1;
+  }
+
+  .item-label {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .item-label.done {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: #aaa;
+  }
+
+  .item-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .item-meta.flagged {
+    color: var(--red);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .status-dot.active { background: var(--ink); }
+  .status-dot.done { background: var(--ink); }
+  .status-dot.flagged { background: var(--red); }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .reset-link {
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .reset-link:hover { color: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="overline">blairs-network / sentinel</div>
+  <h1>Build Tracker</h1>
+  <p class="mandate">Find truth. Document it. Build what is needed to protect it. Repeat.</p>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+<div class="progress-label">
+  <span id="progressText">0 of 0 complete</span>
+  <span id="progressPct">0%</span>
+</div>
+
+<!-- PHASE 1: FOUNDATION -->
+<section>
+  <div class="section-header">
+    <span class="section-title">Phase 1</span>
+    <span class="section-tag">Foundation — The Entity</span>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Write soul.md</div>
+      <div class="item-meta">The mandate. Immutable. Written once.</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Create repo blairs-network/sentinel</div>
+      <div class="item-meta">GitHub · public · MIT license</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Commit AGENTS.md + README.md + soul.md</div>
+      <div class="item-meta">Base repo structure in place</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Initialize memory/sentinel.db</div>
+      <div class="item-meta">schema.sql · 4 tables · append-only verified</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Verify memory/db.py — all write functions</div>
+      <div class="item-meta">Chained call: observation → signal → decision → build</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 2: THE LOOP -->
+<section>
+  <div class="section-header">
+    <span class="section-title">Phase 2</span>
+    <span class="section-tag">The Loop — Sentinel Goes Live</span>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Verify observe.py — empty inbox run</div>
+      <div class="item-meta">Returns valid dict · empty signals · capabilities listed</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Verify observe.py — signal inbox run</div>
+      <div class="item-meta">Signal read · moved to inbox/processed/ · returned in dict</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Verify loop.py — 3 cycles</div>
+      <div class="item-meta">3 observation rows in db · no exceptions · cycle increments</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">Verify build.py — scope a test skill</div>
+      <div class="item-meta">Decision logged first · directory created · AGENTS.md written</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox done"></div>
+    <div class="status-dot done"></div>
+    <div class="item-text">
+      <div class="item-label done">End-to-end test — full signal → build cycle</div>
+      <div class="item-meta">Drop Hermes signal · loop picks up · decision logged · skill scoped</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot active"></div>
+    <div class="item-text">
+      <div class="item-label">Sentinel is alive — loop.py running on Mac Mini M4</div>
+      <div class="item-meta">Continuous · logging · no manual trigger required</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 3: SKILLS -->
+<section>
+  <div class="section-header">
+    <span class="section-title">Phase 3</span>
+    <span class="section-tag">Skills — First Builds</span>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Induct sentinel-audit as Skill 01</div>
+      <div class="item-meta">blairs-network/sentinel-audit · provenance documented · AGENTS.md ✓</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">sentinel-audit — Claude Code build complete</div>
+      <div class="item-meta">All 4 metrics · SQLite · report · dashboard</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Induct dual-brain as Skill 02</div>
+      <div class="item-meta">blairs-network/dual-brain · already shipped · formalize provenance</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Induct ARK as Skill 03</div>
+      <div class="item-meta">blairs-network/ark · already shipped · formalize provenance</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 4: HERMES FEED -->
+<section>
+  <div class="section-header">
+    <span class="section-title">Phase 4</span>
+    <span class="section-tag">The Feed — Hermes → Sentinel</span>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Define Hermes signal format</div>
+      <div class="item-meta">JSON spec · source / timestamp / pattern / frequency / suggested_gap</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Build Hermes → inbox/ bridge</div>
+      <div class="item-meta">Hermes cluster output writes JSON to sentinel/inbox/</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Live test — Hermes pattern triggers Sentinel build</div>
+      <div class="item-meta">Real cluster → real signal → real decision → skill scoped</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 5: PUBLIC -->
+<section>
+  <div class="section-header">
+    <span class="section-title">Phase 5</span>
+    <span class="section-tag">Public — Governance Stack Complete</span>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">blairs-network org page references sentinel as base</div>
+      <div class="item-meta">All skills link back to the entity</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">sentinel/README.md — skills table complete with all inducted skills</div>
+      <div class="item-meta">Provenance documented for each</div>
+    </div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="checkbox"></div>
+    <div class="status-dot"></div>
+    <div class="item-text">
+      <div class="item-label">Loop has run for 7 consecutive days without manual intervention</div>
+      <div class="item-meta">Sentinel is running. The mandate is active.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span id="lastUpdated">updated May 30, 2026</span>
+  <button class="reset-link" onclick="resetAll()">reset</button>
+</footer>
+
+<script>
+  const STORAGE_KEY = 'sentinel-build-tracker';
+
+  function save() {
+    const checked = [];
+    document.querySelectorAll('.item').forEach((item, i) => {
+      if (item.querySelector('.checkbox').classList.contains('done')) {
+        checked.push(i);
+      }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+    document.getElementById('lastUpdated').textContent = 'updated ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.item');
+    const done = document.querySelectorAll('.checkbox.done').length;
+    const total = items.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${done} of ${total} complete`;
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+
+  function toggle(item) {
+    const cb = item.querySelector('.checkbox');
+    const label = item.querySelector('.item-label');
+    const dot = item.querySelector('.status-dot');
+    const isDone = cb.classList.toggle('done');
+    label.classList.toggle('done', isDone);
+    dot.classList.toggle('done', isDone);
+    updateProgress();
+    save();
+  }
+
+  function load() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) {
+      updateProgress();
+      return;
+    }
+    const checked = JSON.parse(saved);
+    const items = document.querySelectorAll('.item');
+    // Clear all, then apply saved state
+    items.forEach(item => {
+      item.querySelector('.checkbox').classList.remove('done');
+      item.querySelector('.item-label').classList.remove('done');
+      item.querySelector('.status-dot').classList.remove('done');
+    });
+    checked.forEach(i => {
+      if (items[i]) {
+        items[i].querySelector('.checkbox').classList.add('done');
+        items[i].querySelector('.item-label').classList.add('done');
+        items[i].querySelector('.status-dot').classList.add('done');
+      }
+    });
+    updateProgress();
+  }
+
+  function resetAll() {
+    if (!confirm('Reset all progress?')) return;
+    document.querySelectorAll('.checkbox').forEach(cb => cb.classList.remove('done'));
+    document.querySelectorAll('.item-label').forEach(l => l.classList.remove('done'));
+    document.querySelectorAll('.status-dot').forEach(d => { d.classList.remove('done'); d.classList.remove('active'); });
+    localStorage.removeItem(STORAGE_KEY);
+    updateProgress();
+  }
+
+  load();
+</script>
+
+</body>
+</html>
